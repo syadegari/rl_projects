@@ -5,7 +5,7 @@ import torch.optim as optim
 
 from .params import device
 from .replay_buffer import ReplayBuffer
-from .model import QNetwork
+from .model import QNetwork, DuelingQNetwork
 
 
 class DQNAgent:
@@ -14,14 +14,19 @@ class DQNAgent:
         self.state_size = state_size
         self.action_size = action_size
 
-        self.qnetwork_local = QNetwork(params['seed'], state_size, action_size)
-        self.qnetwork_target = QNetwork(params['seed'], state_size, action_size)
-        # self.optimizer = optim.Adam(self.qnetwork_local.parameters(), params['lr'])
-        self.optimizer = optim.SGD(self.qnetwork_local.parameters(), params['lr'])
+        if params['model'] == 'QNetwork':
+            self.qnetwork_local = QNetwork(params['seed'], state_size, action_size).to(device)
+            self.qnetwork_target = QNetwork(params['seed'], state_size, action_size).to(device)
+        elif params['model'] == 'DuelingQNetwork':
+            self.qnetwork_local = DuelingQNetwork(params['seed'], state_size, action_size).to(device)
+            self.qnetwork_target = DuelingQNetwork(params['seed'], state_size, action_size).to(device)
+
+        self.optimizer = optim.Adam(self.qnetwork_local.parameters(), params['lr'])
 
         self.buffer = ReplayBuffer(params['buffer_size'], params['batch_size'], params['seed'])
         self.t_step = 0
 
+        self.model = params['model']
         self.seed = params['seed']
         self.gamma = params['gamma']
         self.lr = params['lr']
