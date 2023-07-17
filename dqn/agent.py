@@ -45,7 +45,6 @@ class DQNAgent:
                 self.learn(experiences, self.gamma)
 
     def act(self, state, eps=0.0):
-        # import pdb; pdb.set_trace()
         state = torch.from_numpy(state).float().unsqueeze(0).to(device)
 
         self.qnetwork_local.eval()

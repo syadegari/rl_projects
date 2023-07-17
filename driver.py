@@ -1,7 +1,6 @@
 import os
 import argparse
 from collections import deque
-
 from unityagents import UnityEnvironment
 
 from dqn.dqn_algo import dqn
@@ -15,7 +14,6 @@ def parse_arguments():
     parser.add_argument('--seed', nargs='?', const=None, type=int)
     parser.add_argument('--experiment-name', nargs='?', const=None, type=str)
     return parser.parse_args()
-
 
 
 if __name__ == '__main__':
@@ -43,5 +41,3 @@ if __name__ == '__main__':
         experiment_name=params['experiment_name'])
 
     env.close()
-
-    print(n_state, n_action)

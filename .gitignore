@@ -1,4 +1,5 @@
 .ipynb_checkpoints/
+**/__pycache__/
 Untitled.ipynb
 my_dqn_project.egg-info/
 solution-dqn/
