@@ -28,9 +28,9 @@ if __name__ == '__main__':
     n_state = brain.vector_observation_space_size
     n_action = brain.vector_action_space_size
 
-    if params['agent'] == 'dqn':
+    if params['agent'] == 'DQN':
         agent = DQNAgent(n_state, n_action, params)
-    elif params['agent'] == 'ddqn':
+    elif params['agent'] == 'DDQN':
         agent = DDQNAgent(n_state, n_action, params)
     dqn(env, agent, 
         n_episodes=params['n_episodes'], 

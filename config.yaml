@@ -6,7 +6,8 @@ lr : 5.e-4
 tau : 5.e-3
 gamma : 0.99
 # dqn or ddqn
-agent : ddqn
+agent : DDQN
+model : DuelingQNetwork
 
 #
 n_episodes : 300
@@ -20,4 +21,4 @@ eps_decay : 0.995
 # environment path including the name
 env_path : /Users/syad/Documents/code/AI/deep-reinforcement-learning/p1_navigation/Banana
 
-experiment_name : p1_ddqn_sgd
+experiment_name : p1_test
