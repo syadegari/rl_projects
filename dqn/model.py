@@ -38,11 +38,13 @@ class DuelingQNetwork(nn.Module):
             nn.Linear(fc_units, fc_units),
             nn.ReLU(),
         )
+        # value branch
         self.v_branch = nn.Sequential(
             nn.Linear(fc_units, fc_units),
             nn.ReLU(),
             nn.Linear(fc_units, 1)
         )
+        # action branch
         self.a_branch = nn.Sequential(
             nn.Linear(fc_units, fc_units),
             nn.ReLU(),
