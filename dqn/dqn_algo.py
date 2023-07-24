@@ -1,8 +1,7 @@
 from collections import deque
-import numpy as np
 
 from .params import  device
-from .logs import log_scores
+from .logs import LogScores
 
 
 def env_reset(env, brain_name, train_mode=True):
@@ -17,7 +16,12 @@ def env_step(env, action, brain_name):
     done = env_info.local_done[0]
     return next_state, reward, done, ''
 
-def dqn(env, agent, n_episodes, max_t, eps_start, eps_end, eps_decay, experiment_name):
+def write_scores(experiment_name, scores):
+    with open(f'scores_{experiment_name}.dat', 'w') as f:
+        f.writelines('\n'.join(map(str, scores)))
+
+def dqn(env, agent, n_episodes, max_t, eps_start, eps_end, eps_decay, experiment_name, score_threshold, stop_at_threshold):
+    log_scores = LogScores()
     scores = []
     scores_window = deque(maxlen=100)
     eps = eps_start
@@ -28,7 +32,7 @@ def dqn(env, agent, n_episodes, max_t, eps_start, eps_end, eps_decay, experiment
         for t in range(max_t):
             action = agent.act(state, eps)
             next_state, reward, done, _ = env_step(env, action, env.brain_names[0])
-            agent.step(state, action, reward, next_state, done)
+            agent.step(state, action, reward, next_state, done, i_episode)
             state = next_state
             score += reward
             if done:
@@ -38,8 +42,12 @@ def dqn(env, agent, n_episodes, max_t, eps_start, eps_end, eps_decay, experiment
         scores.append(score)
         eps = max(eps_end, eps_decay * eps)
 
-        log_scores(agent, i_episode, scores_window, score_threshold=200.0)
+        is_solved = log_scores.log_scores(agent, i_episode, scores_window, eps, 
+                                          score_threshold=score_threshold, 
+                                          experiment_name=experiment_name)
+        if is_solved and stop_at_threshold:
+            write_scores(experiment_name, scores)
+            return
+    write_scores(experiment_name, scores)
 
-    with open(f'scores_{experiment_name}.dat', 'w') as f:
-        f.writelines('\n'.join(map(str, scores)))
 
