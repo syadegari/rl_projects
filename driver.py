@@ -5,14 +5,15 @@ from unityagents import UnityEnvironment
 
 from dqn.dqn_algo import dqn
 from dqn.agent import DQNAgent, DDQNAgent
-from dqn.params import get_params
+from dqn.params import get_params, PARAMS_SCHEMA, HelpFormatter
+
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('-c', '--config-file',
-        help="config file, including the path")
-    parser.add_argument('--seed', nargs='?', const=None, type=int)
-    parser.add_argument('--experiment-name', nargs='?', const=None, type=str)
+    parser = argparse.ArgumentParser(description='Command line arguments from schema',
+                                 formatter_class=HelpFormatter)
+    parser.add_argument('-c', '--config-file', type=str,  help="config file, including the path")
+    for key, value in PARAMS_SCHEMA.items():
+        parser.add_argument(f'--{key}', **value)
     return parser.parse_args()
 
 
