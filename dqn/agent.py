@@ -27,6 +27,7 @@ class DQNAgent:
             self.qnetwork_target = DuelingQNetwork(params['seed'], state_size, action_size).to(device)
 
         self.optimizer = optim.Adam(self.qnetwork_local.parameters(), params['lr'])
+        self.lr_scheduler = optim.lr_scheduler.ExponentialLR(self.optimizer, params['lr_decay'])
 
         self.buffer = PrioritizedReplayBuffer(
             params['buffer_size'],
@@ -96,6 +97,7 @@ class DQNAgent:
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
+        self.lr_scheduler.step()
         self.soft_update()
         # update priorities
         with torch.no_grad():
