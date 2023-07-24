@@ -6,8 +6,9 @@ from .params import device
 
 class QNetwork(nn.Module):
     def __init__(self, seed, state_size, action_size,
-                 fc_units=256):
-        self.seed = torch.manual_seed(seed)
+                 fc_units=128):
+        self.seed = seed
+        torch.manual_seed(seed)
         self.state_size = state_size
         self.action_size = action_size
         super(QNetwork, self).__init__()
@@ -16,9 +17,9 @@ class QNetwork(nn.Module):
             nn.ReLU(),
             nn.Linear(fc_units, fc_units),
             nn.ReLU(),
-            nn.Linear(fc_units, fc_units),
+            nn.Linear(fc_units, fc_units//2),
             nn.ReLU(),
-            nn.Linear(fc_units, action_size)
+            nn.Linear(fc_units//2, action_size)
         )
 
     def forward(self, state):
@@ -27,8 +28,9 @@ class QNetwork(nn.Module):
 
 class DuelingQNetwork(nn.Module):
     def __init__(self, seed, state_size, action_size,
-                 fc_units=256):
-        self.seed = torch.manual_seed(seed)
+                 fc_units=128):
+        self.seed = seed
+        torch.manual_seed(seed)
         self.state_size = state_size
         self.action_size = action_size
         super(DuelingQNetwork, self).__init__()
@@ -37,18 +39,20 @@ class DuelingQNetwork(nn.Module):
             nn.ReLU(),
             nn.Linear(fc_units, fc_units),
             nn.ReLU(),
+            nn.Linear(fc_units, fc_units//2),
+            nn.ReLU(),
         )
         # value branch
         self.v_branch = nn.Sequential(
-            nn.Linear(fc_units, fc_units),
+            nn.Linear(fc_units//2, fc_units//4),
             nn.ReLU(),
-            nn.Linear(fc_units, 1)
+            nn.Linear(fc_units//4, 1)
         )
         # action branch
         self.a_branch = nn.Sequential(
-            nn.Linear(fc_units, fc_units),
+            nn.Linear(fc_units//2, fc_units//2),
             nn.ReLU(),
-            nn.Linear(fc_units, action_size)
+            nn.Linear(fc_units//2, action_size)
         )
 
     def forward(self, x):
