@@ -1,28 +1,22 @@
-update_every : 4
-batch_size : 64
-buffer_size : 100_000
-seed : 101
-lr : 5.e-4
-tau : 5.e-3
-gamma : 0.99
-# dqn or ddqn
-agent : DDQN
-model : DuelingQNetwork
-
-#
-n_episodes : 300
-max_t : 1000
-
-#
-eps_start : 1.0
-eps_end : 0.01
-eps_decay : 0.995
-
-# environment path including the name
-env_path : /Users/syad/Documents/code/AI/deep-reinforcement-learning/p1_navigation/Banana
-
-experiment_name : p1_testalpha: 0.0
+agent: DQN
 alpha: 0.0
+batch_size: 64
 beta_0: 1.0
+buffer_size: 100000
+env_path: /Users/syad/Documents/code/AI/deep-reinforcement-learning/p1_navigation/Banana
+eps_decay: 0.98
+eps_end: 0.01
+eps_start: 0.1
+experiment_name: test-exp
+gamma: 0.99
+generate_config: false
 lr: 0.0004
 lr_decay: 1.0
+max_t: 300
+model: QNetwork
+n_episodes: 300
+seed: 101
+tau: 0.01
+update_every: 4
+score_threshold: 13.0
+stop_at_threshold: false 
