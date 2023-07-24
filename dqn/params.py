@@ -26,6 +26,8 @@ PARAMS_SCHEMA = {
     'alpha': {'type': float, 'help': 'Float value between 0 and 1. 0 results in uniform buffer (non-prioritized)'},
     'beta_0': {'type': float, 'help': 'Float between 0 and 1. Anneals linearly to 1.'},
     'generate_config': {'action': 'store_true', 'default': None, 'help': 'Generates the modified config file and quits.'},
+    'stop_at_threshold': {'action': 'store_true', 'default': None, 'help': 'Continues the training after reaching the threshold.'},
+    'score_threshold' : {'type': float, 'help': 'Threshold value. Stop the training when the value is reached, if s`top_at_threshold` is True.'}
     }
 
 logging.basicConfig(level=logging.INFO)

@@ -33,12 +33,15 @@ if __name__ == '__main__':
         agent = DQNAgent(n_state, n_action, params)
     elif params['agent'] == 'DDQN':
         agent = DDQNAgent(n_state, n_action, params)
+
     dqn(env, agent, 
         n_episodes=params['n_episodes'], 
         max_t=params['max_t'],
         eps_start=params['eps_start'],
         eps_end=params['eps_end'],
         eps_decay=params['eps_decay'],
-        experiment_name=params['experiment_name'])
+        experiment_name=params['experiment_name'],
+        score_threshold=params['score_threshold'],
+        stop_at_threshold=params['stop_at_threshold'])
 
     env.close()
