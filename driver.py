@@ -21,8 +21,7 @@ if __name__ == '__main__':
     #      
     args = parse_arguments() 
     params = get_params(os.path.abspath(args.config_file), vars(args))
-
-    env = UnityEnvironment(file_name=params['env_path'], no_graphics=True)
+    env = UnityEnvironment(file_name=params['env_path'], no_graphics=True, seed=params['seed'])
     brain_name = env.brain_names[0]
     brain = env.brains[brain_name]
 
