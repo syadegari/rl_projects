@@ -21,4 +21,6 @@ eps_decay : 0.995
 # environment path including the name
 env_path : /Users/syad/Documents/code/AI/deep-reinforcement-learning/p1_navigation/Banana
 
-experiment_name : p1_test
+experiment_name : p1_testalpha: 0.0
+alpha: 0.0
+beta_0: 1.0
