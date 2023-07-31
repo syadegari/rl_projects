@@ -1,0 +1,21 @@
+batch_size: 64
+#
+eps_decay: 0.98
+eps_end: 0.01
+eps_start: 0.1
+#
+env_name: CartPole-v1
+experiment_name: test-exp
+gamma: 0.99
+generate_config: false
+lr: 0.0004
+lr_decay: 1.0
+max_t: 300
+
+n_episodes: 300
+seed: 101
+
+score_threshold: 13.0
+stop_at_threshold: false 
+
+policy_fc_units: [16, 16]
