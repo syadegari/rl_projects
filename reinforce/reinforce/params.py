@@ -14,6 +14,7 @@ PARAMS_SCHEMA = {
     #
     'gamma': {'type': float, 'help': 'Gamma parameter in TD-update.'},
     'n_episodes': {'type': int, 'help': 'Total number of episodes for training the environment.'},
+    'print_every': {'type': int, 'help': 'Frequency of printing scores.'},
     'max_t': {'type': int, 'help': 'Maximum time steps for playing each episode.'},
     'eps_start': {'type': float, 'help': 'Initial value for eps-greedy algorithm.'},
     'eps_end': {'type': float, 'help': 'Minimum value for eps-greedy algorithm.'},

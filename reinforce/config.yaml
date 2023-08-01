@@ -13,6 +13,7 @@ lr_decay: 1.0
 max_t: 300
 
 n_episodes: 300
+print_every: 100
 seed: 101
 
 score_threshold: 13.0
