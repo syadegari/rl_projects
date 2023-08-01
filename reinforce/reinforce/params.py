@@ -4,7 +4,6 @@ import logging
 import yaml
 
 PARAMS_SCHEMA = {
-    'batch_size': {'type': int, 'help': 'Batch size'},
     'seed': {'type': int, 'help': 'Seed number'},
     # parameters of learning rate
     'lr': {'type': float, 'help': 'Optimizer learning rate'},
@@ -16,9 +15,6 @@ PARAMS_SCHEMA = {
     'n_episodes': {'type': int, 'help': 'Total number of episodes for training the environment.'},
     'print_every': {'type': int, 'help': 'Frequency of printing scores.'},
     'max_t': {'type': int, 'help': 'Maximum time steps for playing each episode.'},
-    'eps_start': {'type': float, 'help': 'Initial value for eps-greedy algorithm.'},
-    'eps_end': {'type': float, 'help': 'Minimum value for eps-greedy algorithm.'},
-    'eps_decay': {'type': float, 'help': 'Decay value for eps-greedy algorithm.'},
     'env_name': {'type': str, 'choices': ['CartPole-v1'], 'help': 'Name of the einvironment'},
     'experiment_name': {'type': str, 'help': 'Name of the experiment.'},
     'generate_config': {'action': 'store_true', 'default': None, 'help': 'Generates the modified config file and quits.'},
