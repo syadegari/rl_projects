@@ -1,0 +1,8 @@
+* TODO Handle seed as best as possible
+* TODO Compare results and hyperparams with default implementation
+* TODO Write driver and handle parameters
+
+* TODO Complete the tests
+* TODO Run jupyter notebook with CartPole and Lander
+** TODO Print scores and save figures
+* TODO Complete readme with the rest of information and some outputs from jupyter notebook
