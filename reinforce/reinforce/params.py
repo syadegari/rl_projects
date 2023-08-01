@@ -53,7 +53,7 @@ def check_params_exist(params):
         return
 
 def get_params(config_path, cmdline_params):
-    # remove None values from cmdline arguments
+    # remove empty values from cmdline arguments
     cmdline_params = {k: v for k, v in cmdline_params.items() if v is not None}
     rewrite_config_file = False
     with open(config_path, 'r') as f:
@@ -61,10 +61,10 @@ def get_params(config_path, cmdline_params):
     try:
         # replace the specified parameters from the cmdline in params dict
         for param_name, param_val in cmdline_params.items():
+            # config_file always comes from cmdline so we ignore it
             if param_name != 'config_file':
-                if param_val is not None:
-                    rewrite_config_file = True
-                    params[param_name] = param_val
+                rewrite_config_file = True
+                params[param_name] = param_val
         #
         check_params_exist(params)
         check_params_values(params)
