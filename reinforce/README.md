@@ -14,7 +14,9 @@ We start by writing the gradient of the expected return in its general form. We 
 $$
 U(\theta) = \sum_{\tau}P(\tau;\theta)R(\tau)
 $$
+
 where $\tau$ is a trajectory. Continuing the derivation we get:
+
 $$
 \begin{align}
 \nabla_{\theta} U(\theta) &= \sum_{\tau} \nabla_{\theta} P(\tau;\theta)R(\tau) \\
