@@ -7,7 +7,6 @@ PARAMS_SCHEMA = {
     'seed': {'type': int, 'help': 'Seed number'},
     # parameters of learning rate
     'lr': {'type': float, 'help': 'Optimizer learning rate'},
-    'lr_decay': {'type': float, 'help': 'Learning rate decay factor for exponential decay'},
     # policy layers
     'policy_fc_units': {'type': int, 'nargs': '+', 'help': 'list of space separated linear layers of the policy'},
     #

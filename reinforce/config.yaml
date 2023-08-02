@@ -3,7 +3,6 @@ experiment_name: test-exp
 gamma: 0.99
 generate_config: false
 lr: 0.0004
-lr_decay: 1.0
 max_t: 300
 
 n_episodes: 300
