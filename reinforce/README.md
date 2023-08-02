@@ -16,8 +16,8 @@ U(\theta) = \sum_{\tau}P(\tau;\theta)R(\tau)
 $$
 $$
 \begin{align}
-\nabla_{\theta} U(\theta) &= \sum_{\tau} \nabla_{\theta} P(\tau;\theta)R(\tau) \\\\\\
-&=\sum_{\tau} \frac{P(\tau;\theta)}{P(\tau;\theta)} \nabla_{\theta} P(\tau;\theta)R(\tau) \\\\\\
+\nabla_{\theta} U(\theta) &= \sum_{\tau} \nabla_{\theta} P(\tau;\theta)R(\tau) \\\\
+&=\sum_{\tau} \frac{P(\tau;\theta)}{P(\tau;\theta)} \nabla_{\theta} P(\tau;\theta)R(\tau) \\\\
 &=\sum_{\tau} P(\tau;\theta) \nabla_{\theta} {\rm{log}}(P(\tau;\theta))R(\tau)
 \end{align}
 $$
