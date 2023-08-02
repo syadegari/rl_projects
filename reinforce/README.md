@@ -14,6 +14,9 @@ We start by writing the gradient of the expected return in its general form. We 
 $$
 U(\theta) = \sum_{\tau}P(\tau;\theta)R(\tau)
 $$
+
+where $\tau$ is a trajectory. Continuing the derivation we get:
+
 $$
 \begin{align}
 \nabla_{\theta} U(\theta) &= \sum_{\tau} \nabla_{\theta} P(\tau;\theta)R(\tau) \\
@@ -23,7 +26,7 @@ $$
 $$
 
 
-The first part is very straightforward. This is also called **the likelihood ratio trock**. We then approximate the gardient using the sample based approach:
+The first part is very straightforward. This is also called **the likelihood ratio trick**. We then approximate the gardient using the sample based approach:
 
 $$
 \begin{align}
@@ -52,7 +55,7 @@ $$
 \end{align}
 $$
 
-Pluggin (7) into (4) we get the final expression for estimate of the gradient in REINFORCE method:
+Plug in (7) into (4) we get the final expression for estimate of the gradient in REINFORCE method:
 
 $$
 \nabla_{\theta} U(\theta) \approx \frac{1}{m} \sum_{i=1}^m \sum_{t=0}^H \nabla_{\theta} {\rm log} \pi_{\theta}(a_t^{(i)}|s_t^{(i)})R(\tau^{(i)}).
