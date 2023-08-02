@@ -15,7 +15,7 @@ $$
 U(\theta) = \sum_{\tau}P(\tau;\theta)R(\tau)
 $$
 
-where $\tau$ is a trajectory. Continuing the derivation we get:
+where $P(\tau;\theta)$ is nonzero probability of trajectory $\tau$, parametrized by $\theta$. Continuing the derivation we get:
 
 $$
 \begin{align}
@@ -26,7 +26,7 @@ $$
 $$
 
 
-The first part is very straightforward. This is also called **the likelihood ratio trick**. We then approximate the gardient using the sample based approach:
+The first part is straightforward and only involve algebraic manipulations. It is also called **the likelihood ratio trick**. We then approximate the gardient using the sample based approach:
 
 $$
 \begin{align}
@@ -44,7 +44,7 @@ $$
 \end{align}
 $$
 
-We note that the state transitions are not parametrized by the the parameters $\theta$ and so they won't make a contribution to our final result. Continuing the derivation, we get:
+Note that the state transitions are not parametrized by $\theta$ and so they won't make a contribution to our final result. Continuing the derivation, we get:
 
 $$
 \begin{align}
@@ -55,7 +55,7 @@ $$
 \end{align}
 $$
 
-Plug in (7) into (4) we get the final expression for estimate of the gradient in REINFORCE method:
+Plug the last expression into the sample-based expression, we get the final result for estimate of the gradient in REINFORCE method:
 
 $$
 \nabla_{\theta} U(\theta) \approx \frac{1}{m} \sum_{i=1}^m \sum_{t=0}^H \nabla_{\theta} {\rm log} \pi_{\theta}(a_t^{(i)}|s_t^{(i)})R(\tau^{(i)}).
