@@ -2,6 +2,7 @@ import os
 import argparse
 import logging
 import yaml
+import torch
 
 PARAMS_SCHEMA = {
     'seed': {'type': int, 'help': 'Seed number'},
@@ -78,3 +79,5 @@ def get_params(config_path, cmdline_params):
     except WrongValueError as w:
         logging.error(f'The following values are incorrect :{w}')
         raise
+
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
