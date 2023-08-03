@@ -8,7 +8,7 @@ Create a virtual environment and activate it:
 python3.6 -m venv drl-venv
 source drl-venv/bin/activate
 ```
-Run the following from terminal to install al the python modules:
+Run the following from terminal to install all the python modules:
 ```bash
 pip install -r requirements.txt
 ```
@@ -107,7 +107,7 @@ The following rules are  applied to setting the parameters of the training:
 - A new configuration is created file if any parameter, except `-c/--config-file`, is provided via command line. The name of the new configuration becomes `config_<experiment_name>.yaml`, where `experiment_name` is one of the parameters that is provided via either `config.yaml` or the command line. 
 
 There are a couple of specific parameters that deserve more explanation: 
-- `--generate-config`: This parameter can be used to generate new configuration files from an already existing configuration file, without running the training. It is useful for generating various configuration files for parametric studies.
+- `--generate-config`: Boolean parameter that can be used to generate new configuration files from an already existing configuration file, without running the training. It is useful for generating various configuration files for parametric studies.
 - `--stop-at-threshold`: This is a boolean parameters that determines if the training should continue after reaching the desired threshold score. If not provided via the command line, or set to `false` in the configuration file, the training runs until the last specified episode. 
 - `--model` and `--agent`: Control the type of model and agent that is used by DQN-Algorithm. For these parameters, only the values inside the curly brackets can be specified. 
 - `-c/--config-file` is the only parameter that cannot be specified inside the configuration file. 
@@ -120,6 +120,7 @@ The training can be done either via command line or the jupyter notebook. In cas
 ```
 
 #### Results
-Results, such as the average score (averaged over the past 100 iterations) and weights of the model, are written in the same location as the location of the configuration file. These files are appended/prepended by the value of parameter `experiment-name`. For example, `experiment_name: ddqn_97` will create two files: `ddqn_97_checkpoint.pth` that contains the weights of the network and `scores_ddqn_97.dat` that contains the average scores of the training. 
+Results, such as the average score (averaged over the past 100 iterations) and weights of the model, are written in the same location as the location of the configuration file. These files are appended/prepended by the value of parameter `experiment-name`. For example, setting `experiment_name: ddqn_97` will create two files: `ddqn_97_checkpoint.pth` that contains the weights of the network and `scores_ddqn_97.dat` that contains the average scores of the training.
 ##### Note
-The weights of the model can only be written once per training, and only if the specified `score_threshold` is reached. Only the first onset of hitting the `score_threshold` is recorded. 
+The weights of the model can only be written once per training, and only if the specified `score_threshold` is reached. Only the first onset of hitting the `score_threshold` is recorded.
+
