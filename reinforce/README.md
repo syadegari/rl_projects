@@ -15,7 +15,7 @@ after installation, one should be able to import the `reinforce` module and its 
 from reinforce.reinforce import wrapper
 from reinforce.params import get_params
 ```
-`wrapper` appects a dictionary of parameters, accessed via `params.get_params` method, and runs the REINFROCE with specified parameters. It is also possible to run the training via command, as described in the next section. 
+`wrapper` accepts a dictionary of parameters, accessed via `params.get_params` method, and runs REINFORCE with specified parameters. It is also possible to run the training via command, as described in the next section. 
 
 ### Instructions
 #### Setting the parameters of the training
