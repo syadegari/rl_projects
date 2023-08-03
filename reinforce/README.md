@@ -111,10 +111,14 @@ The following shows the score of training for the `CartPole-v1` environment. All
 </div>
 
 ### Further improvements to the algorithm
+It is possible to augment REINFORCE with relatively simple improvements. The next development in this repo will have these improvements implemented and the results (for CartPole and LunarLander) are compared with vanilla implementation. Two of these imrpovements are:
+- Collect more than one trajectory and normalize the rewards. 
+- Credit assignment, where for each log-probability that the policy network emits, only the future rewards are considered. 
+
 
 ### References
 The REINFORCE algorithm was first proposed in the following works:
 - Williams, R. J. (1988). Toward a theory of reinforcement-learning connectionist systems.
-Technical Report NU-CCS-88-3, Northeastern University, College of Computer Science. \
+Technical Report NU-CCS-88-3, Northeastern University, College of Computer Science.
 - Williams, R. J. (1992). Simple statistical gradient-following algorithms for connectionist
 reinforcement learning. Machine Learning 8:229-256. 
