@@ -42,7 +42,7 @@ Depending on your operating system, obtain the Unity environment and save it loc
 #### Setting the parameters of the training
 
 All the tweakable parameters of the training are accessible either from the config file `config.yaml` or via command line. A oneliner help for each parameter is displayed if `driver.py` is called using the following from the command line:
-```bash
+```
 (drl-venv) user p1_Navigation $ python driver.py -h
 usage: driver.py [-h] [-c str] [--update_every int] [--batch_size int]
                  [--buffer_size int] [--seed int] [--lr float]
