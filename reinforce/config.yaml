@@ -1,12 +1,12 @@
 env_name: CartPole-v1
-experiment_name: test-exp
-gamma: 0.99
+experiment_name: cartpole_101
+gamma: 1.00
 generate_config: false
 lr: 0.01
 max_t: 1000
 
-n_episodes: 300
+n_episodes: 1000
 print_every: 100
 seed: 101
 score_threshold: 475.0
-policy_fc_units: [16, 16]
+policy_fc_units: [12, 12]
