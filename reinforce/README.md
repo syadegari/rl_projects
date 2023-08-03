@@ -103,7 +103,12 @@ $$
 $$
 
 ### Results
-The following shows the score of training for the `CartPole-v1` environment. 
+The following shows the score of training for the `CartPole-v1` environment. All relevant files for this experiment are stored in the `results` folder. The jupyter notebook showcases how to use the installed modules in order to run an experiment in a notebook.
+
+<div style="width:105%">
+
+![](results/cartpole.png)
+</div>
 
 ### Further improvements to the algorithm
 
