@@ -11,14 +11,13 @@ PARAMS_SCHEMA = {
     # policy layers
     'policy_fc_units': {'type': int, 'nargs': '+', 'help': 'list of space separated linear layers of the policy'},
     #
-    'gamma': {'type': float, 'help': 'Gamma parameter in TD-update.'},
+    'gamma': {'type': float, 'help': 'Gamma parameter (discount factor).'},
     'n_episodes': {'type': int, 'help': 'Total number of episodes for training the environment.'},
     'print_every': {'type': int, 'help': 'Frequency of printing scores.'},
     'max_t': {'type': int, 'help': 'Maximum time steps for playing each episode.'},
-    'env_name': {'type': str, 'choices': ['CartPole-v1'], 'help': 'Name of the einvironment'},
+    'env_name': {'type': str, 'choices': ['CartPole-v1', 'LunarLander-v2'], 'help': 'Name of the einvironment'},
     'experiment_name': {'type': str, 'help': 'Name of the experiment.'},
     'generate_config': {'action': 'store_true', 'default': None, 'help': 'Generates the modified config file and quits.'},
-    'stop_at_threshold': {'action': 'store_true', 'default': None, 'help': 'Continues the training after reaching the threshold.'},
     'score_threshold' : {'type': float, 'help': 'Threshold value. Stop the training when the value is reached, if s`top_at_threshold` is True.'}
     }
 
