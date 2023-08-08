@@ -61,7 +61,7 @@ def optimize(policy_loss: torch.Tensor, optimizer:Optimizer):
 
 def get_return(rewards:np.ndarray, gamma:float) -> float:
     '''r_1 + r_2 * gamma + r_3 * gamma^2 + ...'''
-    return ((gamma * np.ones_like(rewards)) ** np.arange(len(rewards)) * rewards).sum()
+    return (((gamma * np.ones_like(rewards)) ** np.arange(len(rewards))) * rewards).sum()
 
 def get_policy_loss(log_probs:torch.Tensor, R:float) -> torch.Tensor:
     return (-R * torch.cat(log_probs)).sum()
