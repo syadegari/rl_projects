@@ -1,0 +1,162 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amssymb}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+\title{Deep Q-Networks and Variants}
+\author{Your Name}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+This document contains algorithms and explanations for Deep Q-Network (DQN) and its prominent variants.
+
+\section{Vanilla DQN with Experience Replay and Soft Update}
+
+\begin{algorithm}[H]
+\caption{DQN with Experience Replay and Soft Update}
+\begin{algorithmic}[1]
+\STATE Initialize replay buffer $D$ to capacity $N$
+\STATE Initialize Q-network with random weights $\theta$
+\STATE Initialize target Q-network with weights $\theta^{-} = \theta$
+\STATE Set hyperparameters: discount factor $\gamma$, soft update factor $\tau \ll 1$, batch size $M$, and exploration probability $\epsilon$
+
+\FOR{each episode}
+    \STATE Initialize state $s$
+    \FOR{each step in episode}
+        \STATE $a \leftarrow \textbf{SelectAction}(s, \epsilon, \theta)$
+        \STATE Execute action $a$, observe reward $r$ and next state $s'$ 
+        \STATE Store transition $(s,a,r,s')$ in replay buffer $D$
+        \STATE \textbf{UpdateNetwork}($D, \theta, \theta^{-}, \gamma, M$)
+        \STATE Perform soft update: $\theta^{-} \leftarrow \tau \theta + (1 - \tau) \theta^{-}$
+        \STATE Set $s \leftarrow s'$
+        \IF{episode terminates}
+            \STATE Break
+        \ENDIF
+    \ENDFOR
+\ENDFOR
+
+\vspace{0.5em}
+\STATE \textbf{SelectAction}$(s, \epsilon, \theta)$
+\begin{ALC@g}
+    \STATE With probability $\epsilon$, $a \leftarrow$ random action
+    \STATE Otherwise $a \leftarrow \arg\max_a Q(s,a;\theta)$
+    \STATE \textbf{return} $a$
+\end{ALC@g}
+
+\vspace{0.5em}
+\STATE \textbf{UpdateNetwork}$(D, \theta, \theta^{-}, \gamma, M)$
+\begin{ALC@g}
+    \STATE Sample random minibatch of $M$ transitions $(s_j,a_j,r_j,s'_j)$ from $D$
+    \STATE Set target $y_j = r_j + \gamma \max_{a'}Q(s'_j, a'; \theta^{-})$
+    \STATE Perform gradient descent step to minimize $(y_j - Q(s_j, a_j; \theta))^2$
+\end{ALC@g}
+
+\end{algorithmic}
+\end{algorithm}
+
+\section{Double DQN}
+
+\begin{algorithm}[H]
+\caption{Double DQN with Experience Replay and Soft Update}
+\begin{algorithmic}[1]
+\STATE Initialize replay buffer $D$ to capacity $N$
+\STATE Initialize Q-network with random weights $\theta$
+\STATE Initialize target Q-network with weights $\theta^{-} = \theta$
+\STATE Set hyperparameters: discount factor $\gamma$, soft update factor $\tau \ll 1$, batch size $M$, and exploration probability $\epsilon$
+
+\FOR{each episode}
+    \STATE Initialize state $s$
+    \FOR{each step in episode}
+        \STATE $a \leftarrow \textbf{SelectAction}(s, \epsilon, \theta)$
+        \STATE Execute action $a$, observe reward $r$ and next state $s'$ 
+        \STATE Store transition $(s,a,r,s')$ in replay buffer $D$
+        \STATE \textbf{UpdateNetwork}($D, \theta, \theta^{-}, \gamma, M$)
+        \STATE Perform soft update: $\theta^{-} \leftarrow \tau \theta + (1 - \tau) \theta^{-}$
+        \STATE Set $s \leftarrow s'$
+        \IF{episode terminates}
+            \STATE Break
+        \ENDIF
+    \ENDFOR
+\ENDFOR
+
+\vspace{0.5em}
+\STATE \textbf{UpdateNetwork}$(D, \theta, \theta^{-}, \gamma, M)$
+\begin{ALC@g}
+    \STATE Sample random minibatch of $M$ transitions $(s_j,a_j,r_j,s'_j)$ from $D$
+    \STATE Set action $a'_j \leftarrow \arg\max_{a'}Q(s'_j, a'; \theta)$
+    \STATE Set Double DQN target $y_j = r_j + \gamma Q(s'_j, a'_j; \theta^{-})$
+    \STATE Perform gradient descent step to minimize $(y_j - Q(s_j, a_j; \theta))^2$
+\end{ALC@g}
+
+\end{algorithmic}
+\end{algorithm}
+
+\section{Prioritized Experience Replay (PER)}
+
+Prioritized Experience Replay (PER) differs from standard uniform experience replay by assigning priorities to transitions, enabling more effective learning. Typically, priorities are computed based on Temporal Difference (TD) errors, ensuring that more informative experiences are sampled more frequently. The hyperparameter $\alpha$ controls how much prioritization is used, with $\alpha = 0$ corresponding to uniform sampling and $\alpha = 1$ indicating full prioritization. Another hyperparameter, $\beta$, controls the amount of importance-sampling weight correction applied to account for bias introduced by prioritized sampling. $\beta$ is commonly annealed from an initial value (e.g., $\beta = 0.4$) towards $\beta = 1$ over training steps. Different implementations may choose various strategies for calculating priorities and scheduling $\alpha$ and $\beta$.
+
+\section{Dueling DQN}
+
+The Dueling DQN architecture decomposes Q-values into a state-value function $V(s)$ and an advantage function $A(s,a)$. Specifically, Q-values are represented as:
+\[
+Q(s,a;\theta, \alpha, \beta) = V(s; \theta, \alpha) + \left(A(s,a) - \frac{1}{|\mathcal{A}|}\sum_{a'} A(s,a'; \theta^A)\right)
+\]
+
+The update procedure (experience replay and soft updates) is identical to standard or Double DQN; only the network structure and Q-value computation differ.
+
+
+The remaining steps (experience replay, soft update, action selection) remain unchanged from vanilla DQN.
+
+
+Double DQN and Dueling DQN are complementary and can be easily integrated. To combine both approaches, use the action selection method from Double DQN when computing targets, while employing the dueling architecture for the Q-network representation. Specifically, compute the Double Dueling DQN target as follows:
+\[
+y_j = r_j + \gamma Q\left(s'_j, \arg\max_{a'}Q(s'_j,a';\theta); \theta^{-}\right)
+\]
+
+\section{Multi-step (n-step) DQN}
+
+Multi-step (n-step) DQN generalizes the one-step target calculation by using returns based on multiple future steps. The n-step target is computed as:
+\[
+y_j = r_j + \gamma r_{j+1} + \dots + \gamma^{n-1} r_{j+n-1} + \gamma^n \max_{a'} Q(s_{j+n}, a'; \theta^{-})
+\]
+
+All other steps, including action selection, replay buffer usage, and network updates, follow the standard procedure described in Vanilla or Double DQN.
+
+\section{Noisy Networks}
+
+Noisy Networks introduce learnable noise parameters directly into the network layers, providing a more adaptive form of exploration compared to traditional methods like $\epsilon$-greedy. Each network weight is parameterized as $w = \mu + \sigma \cdot \epsilon$, where $\mu$ and $\sigma$ are learned parameters, and $\epsilon$ is sampled from a factorized Gaussian distribution $\epsilon \sim \mathcal{N}(0, I)$. Both $\mu$ and $\sigma$ are updated with gradient descent simultaneously with other network parameters using the same learning rate. Action selection with Noisy Networks is deterministic, as exploration is inherent in the network parameters:
+\[
+a \leftarrow \arg\max_a Q(s,a;\theta)
+\]
+
+
+\section{Distributional RL (C51)}
+
+Distributional RL (C51) extends DQN by predicting the full probability distribution of returns rather than a single expected value. It discretizes returns into a fixed set of atoms $\{ z_1, z_2, \dots, z_N \}$ and learns a categorical distribution over these atoms. The network outputs probabilities $p_i(s,a;\theta)$ for each atom $z_i$. During updates, the categorical distribution is projected onto the discrete set of atoms using the distributional Bellman update:
+
+\[
+z_i' = \rm{clip}(r + \gamma z_i, z_{\rm{min}}, z_{\rm{max}})
+\]
+
+The probability for each atom is updated via a projection step:
+\[
+p_i(s,a) \leftarrow \sum_{j=1}^{N} p_j(s', a^*) \left[1 - \frac{|z_i' - z_j|}{\Delta z}\right]_0^1
+\]
+
+where $a^* = \arg\max_{a'} \mathbb{E}[Z(s', a')]$, and $\Delta z$ is the distance between discrete atoms.
+
+\textbf{Note:} Action selection remains deterministic:
+\[
+a \leftarrow \arg\max_a \mathbb{E}\left[Z\left(s, a, \theta \right)\right] = \arg\max_a \sum_{i=1}^{N} z_i \cdot p_i(s, a; \theta)
+\]
+
+C51 can seamlessly integrate with other DQN variants, such as Double and Dueling architectures, without significant algorithmic changes beyond the target distribution computation.
+
+\end{document}
+
