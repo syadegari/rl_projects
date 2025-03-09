@@ -158,5 +158,9 @@ a \leftarrow \arg\max_a \mathbb{E}\left[Z\left(s, a, \theta \right)\right] = \ar
 
 C51 can seamlessly integrate with other DQN variants, such as Double and Dueling architectures, without significant algorithmic changes beyond the target distribution computation.
 
+\section{Exploration in Noisy Networks and C51}
+
+Traditional $\epsilon$-greedy exploration starts with a high $\epsilon$ value and anneals to a lower value over training. Noisy Networks and C51, especially when combined, do not require explicit annealing. Instead, the exploration level is implicitly adaptive, starting high due to initial network uncertainty and gradually decreasing as the network parameters converge. Thus, explicit $\epsilon$ scheduling becomes unnecessary in these methods.
+
 \end{document}
 
