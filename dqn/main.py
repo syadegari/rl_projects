@@ -233,6 +233,7 @@ class DQNAgent:
             td_errors = (q_expected - q_target).abs().numpy().squeeze()
 
         self.buffer.update_priorities(sampled_values.indices, td_errors)
+        self.soft_update()
         
     def soft_update(self) -> None:
         '''
