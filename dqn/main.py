@@ -269,7 +269,7 @@ def dqn(n_episode: int, env, agent: DQNAgent, t_max, eps_init, eps_final, eps_de
         score = 0
 
         for _ in range(t_max):
-            action = agent.act(state, eps)
+            action = agent.act(state.astype(np.float32), eps)
             next_state, reward, done = env_step(env, action)
             agent.step(state, action, reward, next_state, done, episode)
             state = next_state
