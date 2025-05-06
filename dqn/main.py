@@ -121,7 +121,7 @@ class PriotorizedExperienceReplay:
     def add(self, state, action, reward, next_state, done) -> None:
         max_priority = self.priorities.max() if self.buffer else 1.0
         experience = Experience(state, action, reward, next_state, done)
-        if len(self.buffer) <= self.buffer_size:
+        if len(self.buffer) < self.buffer_size:
             self.buffer.append(experience)
         else:
             self.buffer[self.pos] = experience
