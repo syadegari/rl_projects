@@ -262,10 +262,11 @@ def env_step(env, action) -> Tuple[ndarray, float, bool]:
 
 def dqn(n_episode: int, env, agent: DQNAgent, t_max, eps_init, eps_final, eps_decay, score_window, score_threshold) -> List[float]:
     scores = []
+    eps = eps_init
+
     for episode in range(1, n_episode + 1):
         state = env_reset(env)
         score = 0
-        eps = eps_init
 
         for _ in range(t_max):
             action = agent.act(state, eps)
