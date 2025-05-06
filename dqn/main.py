@@ -31,6 +31,7 @@ class Config:
     buffer_alpha: float = 0.6
     buffer_beta: float = 0.4
     buffer_eps: float = 1e-5
+    buffer_beta_anneal_steps: int = 1_000_000
     #
     t_max: int = 0
     score_threshold: float = 0
@@ -96,7 +97,7 @@ class PriotorizedExperienceReplay:
                  buffer_size: int,
                  batch_size: int,
                  seed: int,
-                 total_steps: int,
+                 beta_anneal_steps: int,
                  alpha: float = 0.6,
                  beta: float = 0.4,
                  eps: float = 1e-5,
@@ -104,7 +105,7 @@ class PriotorizedExperienceReplay:
         self.buffer_size = buffer_size
         self.batch_size = batch_size
         self.seed = seed
-        self.total_steps = total_steps
+        self.beta_anneal_steps = beta_anneal_steps
         self.alpha = alpha
         self.beta = beta
         self.eps = eps
@@ -131,7 +132,7 @@ class PriotorizedExperienceReplay:
 
 
     def get_beta(self, step: int) -> float:
-        beta = self.beta + (1.0 - self.beta) * step / self.total_steps 
+        beta = self.beta + (1.0 - self.beta) * step / self.beta_anneal_steps 
         return min(1.0, beta)
 
     def sample(self, step: int) -> SampledValues:
@@ -186,6 +187,7 @@ class DQNAgent:
         self.batch_size = config.batch_size
 
         self.step_counter: int = 0
+        self.learning_step: int = 0
         self.update_every = config.update_every
 
         self.buffer = PriotorizedExperienceReplay(config.buffer_size, config.batch_size, config.seed, config.total_steps, config.buffer_alpha, config.buffer_beta, config.buffer_eps, config.device)
@@ -208,6 +210,7 @@ class DQNAgent:
         self.buffer.add(state, action, reward, next_state, done)
         self.step_counter = (self.step_counter + 1) % self.update_every
         if self.step_counter == 0 and len(self.buffer) > self.batch_size:
+            self.learning_step += 1
             sampled_values = self.buffer.sample(episode)
             self.learn(sampled_values)
 
@@ -294,7 +297,7 @@ def main() -> None:
         #
         gamma=0.99, update_every=10, discount_factor=0.9, soft_update=0.999,
         #
-        buffer_size=10_000, buffer_alpha=0.6, buffer_beta=0.4, buffer_eps=1e-5,
+        buffer_size=10_000, buffer_alpha=0.6, buffer_beta=0.4, buffer_eps=1e-5, buffer_beta_anneal_steps=10_000,
         #
         # dueling_network=True,
         # noisy_network=True,
