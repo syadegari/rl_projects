@@ -285,7 +285,7 @@ def dqn(n_episode: int, env, agent: DQNAgent, t_max, eps_init, eps_final, eps_de
             print(f"Sovled in {episode} episodes")
             return scores
         else:
-            print(f"episode = {episode}: {scores[-1]}")
+            print(f"episode = {episode}: {scores[-1]}, mean score = {mean_score:.2f}, eps = {eps:.4f}")
 
 
 def create_plot(scores: List[float]) -> None:
