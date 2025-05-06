@@ -139,10 +139,12 @@ class PriotorizedExperienceReplay:
         N = len(self.buffer)
         beta = self.get_beta(step)
 
-        if N < self.buffer_size:
-            priorities = self.priorities[:N]
-        else:
-            priorities = self.priorities
+        # This if/else is not needed because we always take all of the buffer regardless of the size
+        # if N < self.buffer_size:
+        #     priorities = self.priorities[:N]
+        # else:
+        #     priorities = self.priorities
+        priorities = self.priorities[:N]
 
         probs = priorities ** self.alpha
         probs /= probs.sum()
