@@ -46,10 +46,10 @@ class Config:
 
 @dataclass
 class Experience:
-    state: Any = None
-    action: Any = None
-    reward: Any = None
-    next_state: Any= None
+    state: np.ndarray = None
+    action: np.ndarray = None
+    reward: float = None
+    next_state: np.ndarray = None
     done: bool = False
 
 
