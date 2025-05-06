@@ -239,7 +239,7 @@ class DQNAgent:
         '''
         Soft update from local network to target network
         '''
-        assert self.tau < 0.1, "tau parameter for soft update should be close to zero"
+        assert self.tau < 0.1, f"tau parameter for soft update should be close to zero, but got tau = {self.tau}"
         for param_local, param_target in zip(self.q_local.parameters(), self.q_target.parameters()):
             param_target.data.copy_(param_target.data * (1 - self.tau) + param_local.data * self.tau)
 
