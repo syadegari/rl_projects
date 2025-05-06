@@ -230,7 +230,7 @@ class DQNAgent:
         self.optimizer.step()
 
         with torch.no_grad():
-            td_errors = (q_expected - q_target).abs().numpy().squeeze()
+            td_errors = (q_expected - q_target).abs().detach().cpu().numpy().squeeze()
 
         self.buffer.update_priorities(sampled_values.indices, td_errors)
         self.soft_update()
