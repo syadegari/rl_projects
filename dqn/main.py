@@ -18,6 +18,10 @@ from typing import Any, Optional, Union, Tuple, List
 
 @dataclass
 class Config:
+    #
+    double_dqn: bool = False
+    dueling_network: bool = False
+    #
     seed: int = 0
     batch_size: int = 0  
     n_episodes: int = 0
@@ -94,7 +98,26 @@ class QNetwork(nn.Module):
         return self.net(x)
 
 
-class PriotorizedExperienceReplay:
+class DuelingQNetwork(nn.Module):
+    def __init__(self, n_state: int, n_actions: int) -> None:
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(n_state, 64),
+            nn.ReLU(),
+            nn.Linear(64, 128),
+            nn.ReLU(),
+        )
+        self.value_stream = nn.Linear(128, 1)
+        self.advantage_stream = nn.Linear(128, n_actions)
+
+    def forward(self, x: Tensor) -> Tensor:
+        x = self.net(x)
+        value = self.value_stream(x)
+        advantage = self.advantage_stream(x)
+        return value + (advantage - advantage.mean(dim=1, keepdim=True))
+
+
+class PrioritizedExperienceReplay:
     def __init__(self,
                  buffer_size: int,
                  batch_size: int,
@@ -181,8 +204,16 @@ class PriotorizedExperienceReplay:
 
 class DQNAgent:
     def __init__(self, config: Config) -> None:
-        self.q_local = QNetwork(config.num_state, config.num_action)
-        self.q_target = QNetwork(config.num_state, config.num_action)
+        if config.dueling_network:
+            self.q_local = DuelingQNetwork(config.num_state, config.num_action)
+            self.q_target = DuelingQNetwork(config.num_state, config.num_action)
+        else:
+            self.q_local = QNetwork(config.num_state, config.num_action)
+            self.q_target = QNetwork(config.num_state, config.num_action)
+        # Initiate target to be the same as local and later soft update the 
+        # w_target <- tau * w_local
+        self.q_target.load_state_dict(self.q_local.state_dict())
+
         self.optimizer = optim.Adam(self.q_local.parameters(), lr=config.lr)
         
         self.num_action = config.num_action
@@ -194,7 +225,9 @@ class DQNAgent:
         self.learning_step: int = 0
         self.update_every = config.update_every
 
-        self.buffer = PriotorizedExperienceReplay(config.buffer_size, config.batch_size, config.seed, config.total_steps, config.buffer_alpha, config.buffer_beta, config.buffer_eps, config.device)
+        self.double_dqn = config.double_dqn
+
+        self.buffer = PrioritizedExperienceReplay(config.buffer_size, config.batch_size, config.seed, config.buffer_beta_anneal_steps, config.buffer_alpha, config.buffer_beta, config.buffer_eps, config.device)
 
         self.device = config.device
 
@@ -220,7 +253,12 @@ class DQNAgent:
 
     def learn(self, sampled_values: SampledValues) -> None:
         with torch.no_grad():
-            qtarget_next = self.q_target(sampled_values.next_states).max(dim=1)[0].unsqueeze(1)
+            if self.double_dqn:
+                actions = self.q_local(sampled_values.next_states).argmax(dim=1, keepdim=True)
+                qtarget_next = self.q_target(sampled_values.next_states).gather(dim=1, index=actions)
+            else:
+                qtarget_next = self.q_target(sampled_values.next_states).max(dim=1, keepdim=True)[0]
+
         q_target = sampled_values.rewards + (self.gamma * qtarget_next * (1 - sampled_values.dones))
         q_expected = self.q_local(sampled_values.states).gather(dim=1, index=sampled_values.actions.reshape(-1, 1))
 
@@ -308,7 +346,8 @@ def main() -> None:
         #
         # dueling_network=True,
         # noisy_network=True,
-        # double_dqn=True,
+        dueling_network=True,
+        double_dqn=True,
         # priotorized_exp_replay_buffer=True,
         #
         t_max=100, score_threshold=13.0, score_window=100, eps_init=1.0, eps_final=0.01, eps_decay=0.99,
@@ -320,7 +359,7 @@ def main() -> None:
     ) 
     try:
         agent = DQNAgent(config)
-        scores = dqn(100, env, agent, )
+        scores = dqn(config.n_episodes, env, agent, eps_init=config.eps_init, eps_final=config.eps_final, eps_decay=config.eps_decay, t_max=config.t_max, score_window=config.score_window, score_threshold=config.score_threshold)
         create_plot(scores)
     except RuntimeError as error:
         print(f"Caught an error: {error}") 
