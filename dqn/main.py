@@ -125,6 +125,7 @@ class PriotorizedExperienceReplay:
             self.buffer.append(experience)
         else:
             self.buffer[self.pos] = experience
+        # priority is always max when inserting a new experience
         self.priorities[self.pos] = max_priority
         self.pos = (self.pos + 1) % self.buffer_size
 
