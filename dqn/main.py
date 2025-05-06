@@ -162,7 +162,7 @@ class PriotorizedExperienceReplay:
             actions=self.to_torch(self.stack(samples, 'action'), torch.long),
             rewards=self.to_torch(self.stack(samples, 'reward'), torch.float32),
             next_states=self.to_torch(self.stack(samples, 'next_state'), torch.float32),
-            dones=self.to_torch(self.stack(samples, 'done'), torch.uint8),
+            dones=self.to_torch(self.stack(samples, 'done'), torch.float32),
             weights=self.to_torch(weights, torch.float32),
             indices=indices
         )
