@@ -20,7 +20,7 @@ from typing import Any, Optional, Union, Tuple, List
 class Config:
     seed: int = 0
     batch_size: int = 0  
-    total_steps: int = 0
+    n_episodes: int = 0
     lr: float = 0.0
     #
     gamma: float = 0.0
@@ -41,6 +41,8 @@ class Config:
     eps_decay: float = 0
     #
     device: str = 'cpu'
+    num_state: int = 0
+    num_action: int = 0
 
     def __post_init__(self):
         self.device = get_device(self.device)
