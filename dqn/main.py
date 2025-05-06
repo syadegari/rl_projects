@@ -43,6 +43,7 @@ class Config:
 
     def __post_init__(self):
         self.device = get_device(self.device)
+        assert self.eps_init >= self.eps_final, "Initial epsilon should be bigger than final epsilon"
 
 @dataclass
 class Experience:
