@@ -245,12 +245,12 @@ class DQNAgent:
         else:
             return np.random.choice(self.num_action)
 
-    def step(self, state, action, reward, next_state, done, episode: int) -> None:
+    def step(self, state, action, reward, next_state, done) -> None:
         self.buffer.add(state, action, reward, next_state, done)
         self.step_counter = (self.step_counter + 1) % self.update_every
         if self.step_counter == 0 and len(self.buffer) > self.batch_size:
             self.learning_step += 1
-            sampled_values = self.buffer.sample(episode)
+            sampled_values = self.buffer.sample(self.learning_step)
             self.learn(sampled_values)
 
     def learn(self, sampled_values: SampledValues) -> None:
@@ -311,7 +311,7 @@ def dqn(n_episode: int, env, agent: DQNAgent, t_max, eps_init, eps_final, eps_de
         for _ in range(t_max):
             action = agent.act(state.astype(np.float32), eps)
             next_state, reward, done = env_step(env, action)
-            agent.step(state, action, reward, next_state, done, episode)
+            agent.step(state, action, reward, next_state, done)
             state = next_state
             score += reward
             if done:
