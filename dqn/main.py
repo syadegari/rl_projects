@@ -213,6 +213,8 @@ class DQNAgent:
         # Initiate target to be the same as local and later soft update the 
         # w_target <- tau * w_local
         self.q_target.load_state_dict(self.q_local.state_dict())
+        self.q_local.to(config.device)
+        self.q_target.to(config.device)
 
         self.optimizer = optim.Adam(self.q_local.parameters(), lr=config.lr)
         
