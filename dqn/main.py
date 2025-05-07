@@ -84,13 +84,15 @@ def get_device(device_name: Optional[str]) -> str:
 
 
 class QNetwork(nn.Module):
-    def __init__(self, n_state: int, n_actions: int) -> None:
+    def __init__(self, n_state: int, n_actions: int, nonlinear_fn=nn.ReLU) -> None:
         super().__init__()
         self.net = nn.Sequential(
             nn.Linear(n_state, 64),
-            nn.ReLU(),
+            nonlinear_fn(),
             nn.Linear(64, 128),
-            nn.ReLU(),
+            nonlinear_fn(),
+            nn.Linear(128, 128),
+            nonlinear_fn(),
             nn.Linear(128, n_actions)
         )
 
@@ -99,13 +101,15 @@ class QNetwork(nn.Module):
 
 
 class DuelingQNetwork(nn.Module):
-    def __init__(self, n_state: int, n_actions: int) -> None:
+    def __init__(self, n_state: int, n_actions: int, nonlinear_fn=nn.ReLU) -> None:
         super().__init__()
         self.net = nn.Sequential(
             nn.Linear(n_state, 64),
-            nn.ReLU(),
+            nonlinear_fn(),
             nn.Linear(64, 128),
-            nn.ReLU(),
+            nonlinear_fn(),
+            nn.Linear(128, 128),
+            nonlinear_fn(),
         )
         self.value_stream = nn.Linear(128, 1)
         self.advantage_stream = nn.Linear(128, n_actions)
