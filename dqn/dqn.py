@@ -1,3 +1,5 @@
+from tqdm import tqdm
+import logging
 import numpy as np
 import torch
 import torch.nn as nn
@@ -304,11 +306,27 @@ def env_step(env, action) -> Tuple[ndarray, float, bool]:
     return next_state, reward, done
 
 
-def dqn(n_episode: int, env, agent: DQNAgent, t_max, eps_init, eps_final, eps_decay, score_window, score_threshold) -> List[float]:
+def save_experiment(episode: int, agent: DQNAgent, config: Config, scores: List[float], suffix_name: str):
+    checkpoint = {
+        'episode': episode,
+        'model_state_dict': agent.q_local.state_dict(),
+        'optimizer_state_dict': agent.optimizer.state_dict(),
+        'config': config.__dict__,
+        'scores': scores
+    }
+    torch.save(checkpoint, f'experiment_checkpoint_{suffix_name}.pth')
+
+
+def dqn(n_episode: int, env, agent: DQNAgent, t_max, eps_init, eps_final, eps_decay, score_window, score_threshold, config: Config, progress_bar=False) -> List[float]:
+    solved: bool = False
     scores = []
     eps = eps_init
 
-    for episode in range(1, n_episode + 1):
+    episodes = range(1, n_episode+1)
+    if progress_bar:
+        episodes = tqdm(episodes, desc="Episode", ncols=140)
+
+    for episode in episodes:
         state = env_reset(env)
         score = 0
 
@@ -325,19 +343,67 @@ def dqn(n_episode: int, env, agent: DQNAgent, t_max, eps_init, eps_final, eps_de
         eps = max(eps_final, eps * eps_decay)
 
         mean_score = np.mean(scores[-score_window:])
-        if mean_score > score_threshold:
-            print(f"Sovled in {episode} episodes")
-            return scores
+        if mean_score > score_threshold and (not solved):
+            save_experiment(episode, agent, config, scores, "solved")
+            if progress_bar:
+                episodes.set_description(f"Solved in {episode}")
+            else:
+                print(f"Solved in {episode} episodes")
+            solved = True
+            # return scores
+        if progress_bar:
+            episodes.set_postfix(
+                {'score': f'{scores[-1]}', 'mean_score': f'{mean_score:.2f}', 'eps': f'{eps:.4f}'}
+            )
         else:
             print(f"episode = {episode}: {scores[-1]}, mean score = {mean_score:.2f}, eps = {eps:.4f}")
 
+    save_experiment(episode, agent, config, scores, "last")
+    return scores
 
-def create_plot(scores: List[float]) -> None:
-    ...
+
+def run_experiment1(config: Config, env) -> List[float]:
+    '''
+    Use this for multiple runs from a notebook. User should
+    instantiate the environment in the notebook and make sure 
+    to close after running the experiments. 
+    '''
+    # suppress the messages from the agent at the beginning
+    brain_name = env.brain_names[0]
+    brain = env.brains[brain_name]
+    # num_state = brain.vector_observation_space_size
+    # num_action = brain.vector_action_space_size
+    config.num_state = brain.vector_observation_space_size
+    config.num_action = brain.vector_action_space_size
+    agent = DQNAgent(config)
+    scores = dqn(config.n_episodes, env, agent, eps_init=config.eps_init, eps_final=config.eps_final, eps_decay=config.eps_decay, t_max=config.t_max, score_window=config.score_window, score_threshold=config.score_threshold, config=config, progress_bar=True)
+    
+    return scores
+
+
+def run_experiment(config: Config, worker_id: int = 0) -> List[float]:
+    '''Use this for a single run from a notebook'''
+    # suppress the messages from the agent at the beginning
+    logging.getLogger('unityagents').setLevel(logging.WARNING)
+    env = UnityEnvironment(file_name="./Banana_Linux/Banana.x86_64", no_graphics=True, worker_id=worker_id)
+    brain_name = env.brain_names[0]
+    brain = env.brains[brain_name]
+    # num_state = brain.vector_observation_space_size
+    # num_action = brain.vector_action_space_size
+    config.num_state = brain.vector_observation_space_size
+    config.num_action = brain.vector_action_space_size
+    try:
+        agent = DQNAgent(config)
+        scores = dqn(config.n_episodes, env, agent, eps_init=config.eps_init, eps_final=config.eps_final, eps_decay=config.eps_decay, t_max=config.t_max, score_window=config.score_window, score_threshold=config.score_threshold, config=config, progress_bar=True)
+    finally:
+        env.close()
+    
+    return scores
 
 
 def main() -> None:
-    env = UnityEnvironment(file_name="../Banana_Linux/Banana.x86_64", no_graphics=True)
+    '''This is for testing the algorithm form the command line'''
+    env = UnityEnvironment(file_name="./Banana_Linux/Banana.x86_64", no_graphics=True)
     brain_name = env.brain_names[0]
     brain = env.brains[brain_name]
     num_state = brain.vector_observation_space_size
