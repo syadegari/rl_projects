@@ -1,9 +1,15 @@
 # Introduction
 
 ## Environment
-The Unity Banana Collector is a navigation task. An agent must collect yellow bananas (+1 reward) while avoiding the blue bananas (-1 reward). The objective is to collect as many of the formers while avoiding the latters, thus maximizing it reward. The episode end after a fix number of steps (specified by the user/trainer, typically in 100s, usually above 300). The state space is 37-dimensional, corresponding to ray-based perception of the surroundings, velocity of the agent, etc. and the action space is discrete 4-dimensional accounting for movement of the agent in the environment based on a moving coordinate system relative to the agent view (forward, backward, left and right). 
+The Unity Banana Collector is a navigation task. An agent must collect yellow bananas (+1 reward) while avoiding blue bananas (-1 reward). The objective is to collect as many of the former while avoiding the latter, maximizing the total reward. The episode ends after a fixed number of steps, specified by the user or trainer, typically in the hundreds, often around 300.
+
+The state space is 37-dimensional, representing ray-based perception of nearby objects, the agent's velocity, etc..
+
+The action space is a 4-dimensional discrete space that control the agent's movement in a coordinate system relative to its orientation (forward, backward, left and right).
+
 ## Goal
-The goal is to train an agent that can reach an average reward of at least +13 over 100 episodes. 
+The goal is to train an agent that can reach an average reward of at least +13 over 100 episodes.
+
 
 
 ## Installation and dependencies
