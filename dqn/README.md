@@ -1,3 +1,22 @@
+# Introduction
+
+## Environment
+The Unity Banana Collector is a navigation task. An agent must collect yellow bananas (+1 reward) while avoiding the blue bananas (-1 reward). The objective is to collect as many of the formers while avoiding the latters, thus maximizing it reward. The episode end after a fix number of steps (specified by the user/trainer, typically in 100s, usually above 300). The state space is 37-dimensional, corresponding to ray-based perception of the surroundings, velocity of the agent, etc. and the action space is discrete 4-dimensional accounting for movement of the agent in the environment based on a moving coordinate system relative to the agent view (forward, backward, left and right). 
+## Goal
+The goal is to train an agent that can reach an average reward of at least +13 over 100 episodes. 
+
+
+## Installation and dependencies
+Unfortunately for the current version of the unity environments, including the banana collector environment, they can only be used with python 3.6.8, which could be installed using the following commands:
+
+```bash
+conda create -n myenv python=3.6.8 
+conda activate myenv
+pip install -r requirements.txt
+```
+
+## Running the code and training the agent
+
 # A Survey of DQN Methods
 
 This is a list of literature review and some explanations of various methods from DQN method. It starts with basic methods for DQN, as explained in Deepmind paper:
