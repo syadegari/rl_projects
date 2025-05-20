@@ -83,7 +83,17 @@ The follwing plots demonstrate the convergence of the trained agent from Case3 t
 </div>
 
 ## Double Q-Learning
+[Double DQN](https://arxiv.org/abs/1509.06461) decouple the lookup for optimal action and calculation of the Q function by using two different functions for the aforementioned tasks. Since the vanilla DQN with separate target, that was presented in section \ref{VanillaDQNSec}, already has two identical Q function, the function that look up the optimal action can use the target Q function. 
+
 ## Dueling Networks
+In the [Dueling DQN](https://arxiv.org/abs/1511.06581) paper, the Q-value function is decomposed into a state-value function $V(s)$ and an advantage function $A(s,a)$. Of the two variants proposed in the paper, the following is prefered for its stability, and Q-values are represented as:
+
+$$
+Q(s,a;\theta, \alpha, \beta) = V(s; \theta, \beta) + \left(A(s,a;\theta, \alpha) - \frac{1}{|\mathcal{A}|}\sum_{a'} A(s,a'; \theta,\alpha)\right),
+$$ 
+
+where $\mathcal{A}$ is the size of the action space and $\alpha$ and $\beta$ are parameters of two separate streams for value and action functions, respectively (not to be confused with $\alpha$ and $\beta$ from the prioritized experience replay buffer). The update procedure (experience replay and soft updates) is identical to standard or Double DQN; only the network structure and Q-value computation differ.
+
 ## Multistep Learning
 ## Noisy Networks
 ## Distributional RL (C51)
