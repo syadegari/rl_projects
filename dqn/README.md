@@ -1,4 +1,6 @@
 # Introduction
+The following repo contains the implementation of several DQN algorithms and its variants/enhancements tried on the Unity Banana Collector Environment. 
+
 <div style="text-align:center">
 
 ![image](./pics/banana_env_animation.gif)
@@ -33,7 +35,10 @@ This project implements and runs experiments for the following three subvariants
 ### Code organization and running the training
 All the code for the described three cases are in `dqn.py` file. To run the experiment, the user can simply import the routine `run_experiment1` from the file and provide a `Config` object with desired hyperparameters. For each case, we run 7 experiments and collect the scores in three separate json files (available at the root of the project).
 
-### Case 1
+### Choice of parameters 
+The DQN algorithm contains a relatively large set of parameters, each can affect the speed of convergence to a large degree. Below, in Case 1, the base parameters for the case and subseuqnet cases have shown (Case 2 and 3). It should be noted the listed parameters are not exhaustive and there could be better choices for the hyperparameters that provide a faster convergence, but the reported cases have shown a relatively good performance for the available compute budget. 
+
+#### Case 1: DQN Algorithm with Target Network and Prioritized Experience Replay Buffer (PER)
 ```python 
 config = Config(
     seed=101, batch_size=64, n_episodes=600, lr=1e-4,
@@ -46,11 +51,13 @@ config = Config(
 ) 
 ``` 
 
-### Case 2
-### Case 3
+#### Case 2 Double DQN (DDQN)
+#### Case 3 Dueling Networks
 
 
 ### Comparison of different algorithms
+
+The graph below shows the comparison of convergence in three different cases mentioned above (PER, PER + DDQN and PER + DDQN + DuelingNet). For each case, the average of seven runs average score, over 100 episodes, is plotted in thick line, while the standard deviation of each case is plotted in the shades of the respective color. While all three cases appear to have the same standard deviation, it is apparent that Case3 is superior to other two in terms of the speed of convergence. 
 
 <div style="width:90%; margin:auto;">
 
@@ -60,6 +67,7 @@ config = Config(
 
 
 ### Sample plots from an agent that solves the environment
+The follwing plots demonstrate the convergence of the trained agent from Case3 to the specified goal of 13.0 over 100 episodes. The left plot is demonstrate the onset of convergance reached in 385 episodes and the right plot shows the score until the last episode, 600 episodes and average score of 13.76. 
 
 <div style="width:80%; margin:auto;">
 
@@ -69,35 +77,10 @@ config = Config(
 
 # A Survey of DQN Methods
 
-This is a list of literature review and some explanations of various methods from DQN method. It starts with basic methods for DQN, as explained in Deepmind paper:
-- Two separate networks for argmax value (called target network) and one for learning called local network
-- Soft update of the network $\theta_{\rm target} \leftarrow \tau \theta_{\rm target} + (1 - \tau) \theta_{\rm local}$ for some $0 \lt \tau \ll 1$.
-- Priotorized experience replay buffer
+<div style="width:90%; margin:auto;">
 
-
-$$
-\large
-\begin{align*}
-Q_{\rm{local}}(s, a; \theta) \leftarrow Q_{\rm{local}}(s, a; \theta) 
-+ \alpha \big[ Q_{\rm{target}}(s, a; \theta) - Q_{\rm{local}}(s, a; \theta) \big],
-\end{align*}
-
-\\
-
-\begin{align*}
-Q_{\rm{target}}(s, a; \theta) &= r + \gamma \max_{a'} Q_{\rm{local}}(s', a'; \theta),
-\end{align*}
-$$
-
-The loss and gradient are calculated as follows:
-
-
-$$
-l = \left\Vert \left( Q_{\rm local}  - Q_{\rm target} \right)^2 \right\Vert \\
-l = \nabla_{\theta_{\rm local}}\left\Vert \left( Q_{\rm local}  - Q_{\rm target} \right)^2 \right\Vert \\
-g = \nabla_{\theta_{\rm local}} l
-$$
-We then gradually build our way to a rainbow DQN method. 
+![](pics/dqn_algo.png)
+</div>
 
 ## Double Q-Learning
 ## Dueling Networks
