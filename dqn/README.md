@@ -77,7 +77,7 @@ The follwing plots demonstrate the convergence of the trained agent from Case3 t
 
 # A Survey of DQN Methods
 
-<div style="width:90%; margin:auto;">
+<div style="width:75%; margin:auto;">
 
 ![](pics/dqn_algo.png)
 </div>
