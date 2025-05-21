@@ -7,7 +7,7 @@ The following repo contains the implementation of several DQN algorithms and its
 </div>
 
 ## Environment
-The Unity Banana Collector is a navigation task. An agent must collect yellow bananas (+1 reward) while avoiding blue bananas (-1 reward). The objective is to collect as many of the former while avoiding the latter, maximizing the total reward. The episode ends after a fixed number of steps, specified by the user or trainer, typically in the hundreds, often around 300.
+The Unity Banana Collector (download versions for [Linux](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana_Linux.zip), [Mac](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana.app.zip) and [Windows](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana_Windows_x86_64.zip) here) is a navigation task. An agent must collect yellow bananas (+1 reward) while avoiding blue bananas (-1 reward). The objective is to collect as many of the former while avoiding the latter, maximizing the total reward. The episode ends after a fixed number of steps, specified by the user or trainer, typically in the hundreds, often around 300.
 
 The state space is 37-dimensional, representing ray-based perception of nearby objects, the agent's velocity, etc..
 
@@ -39,6 +39,8 @@ All the code for the described three cases are in `dqn.py` file. To run the expe
 The DQN algorithm contains a relatively large set of parameters, each can affect the speed of convergence to a large degree. Below, in Case 1, the base parameters for the case and subseuqnet cases have shown (Case 2 and 3). It should be noted the listed parameters are not exhaustive and there could be better choices for the hyperparameters that provide a faster convergence, but the reported cases have shown a relatively good performance for the available compute budget. 
 
 #### Case 1: DQN Algorithm with Target Network and Prioritized Experience Replay Buffer (PER)
+Much of the hyperparameters in this section are explained in the surveying section of the document. Set the config class as follows (copied from the `report.ipynb`):
+
 ```python 
 config = Config(
     seed=101, batch_size=64, n_episodes=600, lr=1e-4,
@@ -51,8 +53,11 @@ config = Config(
 ) 
 ``` 
 
-#### Case 2 Double DQN (DDQN)
-#### Case 3 Dueling Networks
+#### Case 2 PER + Double DQN (DDQN)
+Case 2 bring everything from the previous case and enables Double DQN as well. This can be done by setting `config.double_dqn = True`.
+
+#### Case 3 PER + DDQN + Dueling Networks
+Similar to Case2, we know enable the final flag to have an agent that trains using PER, DDQN and Dueling Networks by setting `config.dueling_network=True`. 
 
 
 ### Comparison of different algorithms
@@ -76,6 +81,9 @@ The follwing plots demonstrate the convergence of the trained agent from Case3 t
 
 
 # A Survey of DQN Methods
+## The base case with Prioritized Experience Replay Buffer, Target Network and Soft Update
+
+This is manily based on the following two papers [Playing Atari with Deep Reinforcement Learning](https://arxiv.org/abs/1312.5602) and [Prioritized Experience Replay](https://arxiv.org/abs/1511.05952) and summarized in the algorithm below. The latter paper uses errors, computed from temporal differences, to assign different probabilities to different samepls, and then sample from the replay buffer using the computed probabilities. The details of the sampling can be found in the sections (3.3) and (3.4). The sampling and the buffer introduce two hyperparameters, $\alpha$ and $\beta$. According to the paper, $\alpha$ is kept constant at $0.6$ and $\beta = 0.4$ and gradually annealed to $1.0$ during the training. Samples with higher TD-errors are sampled more frequently during the training. 
 
 <div style="width:75%; margin:auto;">
 
@@ -83,7 +91,7 @@ The follwing plots demonstrate the convergence of the trained agent from Case3 t
 </div>
 
 ## Double Q-Learning
-[Double DQN](https://arxiv.org/abs/1509.06461) decouple the lookup for optimal action and calculation of the Q function by using two different functions for the aforementioned tasks. Since the vanilla DQN with separate target, that was presented in section \ref{VanillaDQNSec}, already has two identical Q function, the function that look up the optimal action can use the target Q function. 
+[Double DQN](https://arxiv.org/abs/1509.06461) decouple the lookup for optimal action and calculation of the Q function by using two different functions for the aforementioned tasks. Since the vanilla DQN with separate target, that was presented in the previous section, already has two identical Q function, the function that look up the optimal action can use the target Q function. 
 
 ## Dueling Networks
 In the [Dueling DQN](https://arxiv.org/abs/1511.06581) paper, the Q-value function is decomposed into a state-value function $V(s)$ and an advantage function $A(s,a)$. Of the two variants proposed in the paper, the following is prefered for its stability, and Q-values are represented as:
@@ -94,6 +102,5 @@ $$
 
 where $\mathcal{A}$ is the size of the action space and $\alpha$ and $\beta$ are parameters of two separate streams for value and action functions, respectively (not to be confused with $\alpha$ and $\beta$ from the prioritized experience replay buffer). The update procedure (experience replay and soft updates) is identical to standard or Double DQN; only the network structure and Q-value computation differ.
 
-## Multistep Learning
-## Noisy Networks
-## Distributional RL (C51)
+# Ideas for future work
+Much more can be done to improve the agent's performance, including bringing more enhancements from the Rainbow paper, such as Noisy Networks, C-51 and multistep multistep Q-learning. 
