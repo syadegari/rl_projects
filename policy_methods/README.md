@@ -63,9 +63,58 @@ $$
 
 Since this is an unbiased but noisy estimator (proof?), next some remedies are introduced. 
 
-## Temporal Decomposion
 ## Baseline Subtraction
-Consider the following: In an environment with only positive rewards, even the poor trajectories receive positive reinforcement, which is inefficient at best, if not detrimental. This motivates the introduction of baseline. 
+Consider the following: In an environment with only positive rewards, even the poor trajectories receive positive reinforcement, which is inefficient at best, if not detrimental. This motivates the introduction of baseline:
+$$
+\nabla_\theta U(\theta) \approx \hat{g} = \frac{1}{m} \sum_{i=1}^m \nabla_\theta \log P(\tau^{(i)}; \theta) \left(R(\tau^{(i)}) - b\right)
+$$
+
+Does the new estimate hold, in a sense that it is still unbiased? It is easy to show that the expectation of the new term, $\nabla_\theta \log P(\tau; \theta) b$, is zero, given that $b$ is independent of the samples actions:
+
+$$
+\mathbb E \left[ \nabla_\theta \log P(\tau; \theta) b\right]
+= \sum_\tau P(\tau; \theta) \nabla_\theta \log P(\tau; \theta) b 
+= \sum_\tau \nabla_\theta P(\tau; \theta) b 
+= \nabla_\theta \sum_\tau P(\tau; \theta) b 
+= b \cdot \nabla_\theta 1
+= 0
+$$
+
+Even though this shows that on expectation the contribution of baseline has no effect, in the case of finite sampling, the new baseline leads to reduced variance and a better gradient estimate. 
+When can we pull $b$ out of the sum and not having it depend on $\theta$? This is only allowed, as mentioned above, as long as $b$ is independent sampled action. To show that $b$ cannot depend on action, assume $b = b(u_t)$. Since $u_t \sim \pi_\theta(\cdot|s_t)$, then $b$'s distribution depend on $\theta$/policy and so it is no longer a constant with respect to gradient and trajectories generated. What are some good estimates for the baseline? 
+
+- $b$ that depends on the state $s_t$, motivating the choice of $b=V(s_t)$.
+- $b$ as an average of sampled minibatch of trajectories.
+- Constant $b$
+
+We will revisit these choices again in the next section.
+
+## Temporal Decomposion
+
+The current estimate can be written like the following:
+$$
+\begin{align*}
+
+\hat{g} &= \frac{1}{m} \sum_{i=1}^m \nabla_\theta \log P(\tau^{(i)}; \theta) \left( R(\tau^{(i)}) - b \right) \\
+
+&= \frac{1}{m} \sum_{i=1}^m \left( \sum_{t=0}^{H-1} \nabla_\theta \log \pi_\theta\!\left(u_t^{(i)} \mid s_t^{(i)}\right) \right) 
+\left( \sum_{t=0}^{H-1} R\!\left(s_t^{(i)}, u_t^{(i)}\right) - b \right)  \\
+
+&= \frac{1}{m} \sum_{i=1}^m \left( \sum_{t=0}^{H-1} \nabla_\theta \log \pi_\theta\!\left(u_t^{(i)} \mid s_t^{(i)}\right) 
+\left[ \sum_{k=0}^{t-1} R\!\left(s_k^{(i)}, u_k^{(i)}\right) 
++ \sum_{k=t}^{H-1} R\!\left(s_k^{(i)}, u_k^{(i)}\right) - b \right] \right)
+\end{align*}
+$$
+
+Note that the first term in the square bracket does not depend on current action $u_t^{(i)}$. This justifies removal of the first term from the gradient estimate, and thus lowering of the variance. 
+
+$$
+\hat{g} = \frac{1}{m} \sum_{i=1}^m \sum_{t=0}^{H-1} \nabla_\theta \log \pi_\theta\!\left(u_t^{(i)} \mid s_t^{(i)}\right) 
+\left( 
+\sum_{\color{blue} k=t}^{H-1} R\!\left(s_k^{(i)}, u_k^{(i)}\right) - b(s_t^{(i)}) \right)
+$$
+
+
 ## Value Functions Estimation
 ## Advantage Estimation
 
